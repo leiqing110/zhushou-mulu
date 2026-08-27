@@ -1,0 +1,78 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CategoryBadge from '../../components/CategoryBadge.astro';
+import IntegrationBadge from '../../components/IntegrationBadge.astro';
+import CopyPrompt from '../../components/CopyPrompt.astro';
+import { formatAddedAt } from '../../lib/catalog';
+import { loadBot, loadBots } from '../../lib/load';
+
+export async function getStaticPaths() {
+  const bots = await loadBots();
+  return bots.map((b) => ({ params: { slug: b.slug } }));
+}
+
+const { slug } = Astro.params;
+const loaded = await loadBot(slug ?? '');
+if (!loaded) {
+  return Astro.redirect('/');
+}
+const { card } = loaded;
+---
+
+<Layout
+  title={`${card.name} · 助手目录`}
+  description={`复制「${card.name}」的完整 Grok Bot 提示词。分类：${card.category}。`}
+>
+  <div class="wrap">
+    <p class="crumbs">
+      <a href="/">全部助手</a> /
+      <a href={`/categories/${card.categorySlug}`}>{card.category}</a>
+    </p>
+    <section class="page-hero" style="border-bottom: 0; padding-bottom: 8px;">
+      <h1>{card.name}</h1>
+      <p class="lede">
+        把完整提示词贴进 Grok Bot。它会带你连接工具、问清需求、先出示草稿，你确认后再发出并保存。
+      </p>
+      <div class="meta-row">
+        <CategoryBadge name={card.category} />
+        <span>贡献者 {card.contributor}</span>
+        <span>收录于 {formatAddedAt(card.added_at)}</span>
+      </div>
+    </section>
+
+    <div class="prompt-head">
+      <h2>提示词</h2>
+      <CopyPrompt />
+    </div>
+    <pre class="prompt-box" id="prompt-body">{card.prompt.trim()}</pre>
+    <p class="lede" style="margin-top: 12px; font-size: 14px;">
+      贴进 Grok Bot。它会按步骤向你要信息，不会在你点头之前对外发出。
+    </p>
+
+    <h2 class="section-title" style="margin-top: 36px;"><span>先连接这些工具</span></h2>
+    <div class="chip-row" style="padding-top: 12px;">
+      {card.integrations.map((name) => (
+        <IntegrationBadge name={name} />
+      ))}
+    </div>
+    <p class="lede" style="margin-top: 8px; font-size: 14px;">
+      提示词会在流程里逐个带你连接。用你平时的方式授权即可。
+    </p>
+
+    <div class="notes">
+      <h2>怎么用</h2>
+      <ol>
+        <li><strong>复制提示词</strong>，整段贴进 Grok Bot。</li>
+        <li><strong>连接工具</strong>：飞书、企微、邮箱等，按它的提问接好。</li>
+        <li><strong>先确认再发出</strong>：发送、发布或付款前，它必须先把草稿给你看。</li>
+      </ol>
+    </div>
+
+    <div class="cta-band">
+      <p>
+        自己跑一遍「{card.name}」。复制免费，配置之后可以改。
+      </p>
+      <CopyPrompt label="复制并去配置" />
+    </div>
+  </div>
+</Layout>
