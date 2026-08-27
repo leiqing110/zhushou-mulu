@@ -1,0 +1,233 @@
+---
+import type { BotCard } from '../lib/catalog';
+import { CATEGORIES, INTEGRATIONS } from '../lib/catalog';
+import CategoryBadge from './CategoryBadge.astro';
+import IntegrationBadge from './IntegrationBadge.astro';
+
+interface Props {
+  bots: BotCard[];
+  heading?: string;
+  lockCategory?: string;
+  lockIntegration?: string;
+}
+
+const { bots, heading = '全部助手', lockCategory, lockIntegration } = Astro.props;
+const payload = bots.map((b) => ({
+  slug: b.slug,
+  name: b.name,
+  category: b.category,
+  integrations: b.integrations,
+  contributor: b.contributor,
+  added_at: b.added_at,
+}));
+
+const usedCategories = CATEGORIES.filter((c) =>
+  lockCategory ? c.name === lockCategory : bots.some((b) => b.category === c.name),
+);
+const usedIntegrations = INTEGRATIONS.filter((i) =>
+  lockIntegration
+    ? i.name === lockIntegration
+    : bots.some((b) => b.integrations.includes(i.name)),
+);
+---
+
+<section class="directory" data-directory>
+  <script type="application/json" data-bots set:html={JSON.stringify(payload)} />
+
+  <div class="toolbar">
+    <div class="search">
+      <label for="q">搜索</label>
+      <input id="q" name="q" type="search" placeholder="名称、分类、集成、贡献者" autocomplete="off" />
+    </div>
+    <div class="sort" role="group" aria-label="排序">
+      <button type="button" data-sort="newest" aria-pressed="true">最新</button>
+      <button type="button" data-sort="name" aria-pressed="false">名称</button>
+    </div>
+  </div>
+
+  {
+    !lockCategory && (
+      <div class="chip-row" data-filter="category" role="group" aria-label="按分类筛选">
+        {usedCategories.map((c) => (
+          <button type="button" class="chip" data-value={c.name} aria-pressed="false">
+            {c.name}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  {
+    !lockIntegration && (
+      <div class="chip-row" data-filter="integration" role="group" aria-label="按集成筛选">
+        {usedIntegrations.map((i) => (
+          <button type="button" class="chip" data-value={i.name} aria-pressed="false">
+            <span class="integ-mark" aria-hidden="true">{i.mark}</span>
+            {i.name}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <div class="section-title">
+    <h2>{heading}</h2>
+    <p class="count"><span data-count>{bots.length}</span> 则</p>
+  </div>
+
+  <table class="dir">
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>分类</th>
+        <th>集成</th>
+        <th>贡献者</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        bots.map((bot) => (
+          <tr
+            data-row
+            data-slug={bot.slug}
+            data-name={bot.name}
+            data-category={bot.category}
+            data-integrations={bot.integrations.join(',')}
+            data-contributor={bot.contributor}
+            data-added={bot.added_at}
+          >
+            <td data-label="名称">
+              <a class="bot-name" href={`/bots/${bot.slug}`}>
+                {bot.name}
+              </a>
+            </td>
+            <td data-label="分类">
+              <CategoryBadge name={bot.category} />
+            </td>
+            <td data-label="集成">
+              <div class="integ-list">
+                {bot.integrations.map((name) => (
+                  <IntegrationBadge name={name} />
+                ))}
+              </div>
+            </td>
+            <td data-label="贡献者">{bot.contributor}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="empty" data-empty hidden>没有符合条件的助手。试试别的词，或清掉筛选。</p>
+</section>
+
+<script>
+  type Bot = {
+    slug: string;
+    name: string;
+    category: string;
+    integrations: string[];
+    contributor: string;
+    added_at: string;
+  };
+
+  function initDirectory(root: HTMLElement) {
+    if (root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const jsonEl = root.querySelector<HTMLScriptElement>('[data-bots]');
+    const bots: Bot[] = jsonEl?.textContent ? JSON.parse(jsonEl.textContent) : [];
+    const q = root.querySelector<HTMLInputElement>('#q');
+    const rows = Array.from(root.querySelectorAll<HTMLTableRowElement>('[data-row]'));
+    const empty = root.querySelector<HTMLElement>('[data-empty]');
+    const countEl = root.querySelector<HTMLElement>('[data-count]');
+    const sortBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sort]'));
+    const catBtns = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-filter="category"] .chip'),
+    );
+    const intBtns = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-filter="integration"] .chip'),
+    );
+
+    let sort: 'newest' | 'name' = 'newest';
+    const cats = new Set<string>();
+    const ints = new Set<string>();
+
+    function pressed(btn: HTMLButtonElement, on: boolean) {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('is-on', on);
+    }
+
+    function apply() {
+      const query = (q?.value ?? '').trim().toLowerCase();
+      const tbody = root.querySelector('tbody');
+      const visible: HTMLTableRowElement[] = [];
+
+      const ordered = [...rows].sort((a, b) => {
+        if (sort === 'name') {
+          return (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '', 'zh-CN');
+        }
+        const da = b.dataset.added ?? '';
+        const db = a.dataset.added ?? '';
+        return da.localeCompare(db) || (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '', 'zh-CN');
+      });
+
+      ordered.forEach((row) => tbody?.appendChild(row));
+
+      for (const row of ordered) {
+        const name = (row.dataset.name ?? '').toLowerCase();
+        const category = row.dataset.category ?? '';
+        const integrations = (row.dataset.integrations ?? '').split(',').filter(Boolean);
+        const contributor = (row.dataset.contributor ?? '').toLowerCase();
+        const hay = `${name} ${category} ${integrations.join(' ')} ${contributor}`.toLowerCase();
+
+        const okQuery = !query || hay.includes(query);
+        const okCat = cats.size === 0 || cats.has(category);
+        const okInt = ints.size === 0 || integrations.some((i) => ints.has(i));
+        const show = okQuery && okCat && okInt;
+        row.hidden = !show;
+        if (show) visible.push(row);
+      }
+
+      if (countEl) countEl.textContent = String(visible.length);
+      if (empty) empty.hidden = visible.length > 0;
+    }
+
+    q?.addEventListener('input', apply);
+
+    sortBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sort = (btn.dataset.sort as 'newest' | 'name') ?? 'newest';
+        sortBtns.forEach((b) => pressed(b, b === btn));
+        apply();
+      });
+    });
+
+    function toggleSet(set: Set<string>, btn: HTMLButtonElement) {
+      const value = btn.dataset.value ?? '';
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+      pressed(btn, set.has(value));
+      apply();
+    }
+
+    catBtns.forEach((btn) => btn.addEventListener('click', () => toggleSet(cats, btn)));
+    intBtns.forEach((btn) => btn.addEventListener('click', () => toggleSet(ints, btn)));
+
+    rows.forEach((row) => {
+      row.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (target.closest('a')) return;
+        const slug = row.dataset.slug;
+        if (slug) window.location.href = `/bots/${slug}`;
+      });
+    });
+
+    apply();
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>('[data-directory]').forEach(initDirectory);
+  }
+
+  initAll();
+  document.addEventListener('astro:page-load', initAll);
+</script>
