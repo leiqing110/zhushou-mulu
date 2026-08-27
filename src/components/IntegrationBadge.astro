@@ -1,0 +1,25 @@
+---
+import { integrationByName } from '../lib/catalog';
+
+interface Props {
+  name: string;
+  href?: string | false;
+}
+
+const { name, href } = Astro.props;
+const meta = integrationByName(name);
+const to = href === false ? undefined : href ?? (meta ? `/integrations/${meta.slug}` : undefined);
+const mark = meta?.mark ?? name.slice(0, 1);
+---
+
+{to ? (
+  <a class="integ" href={to}>
+    <span class="integ-mark" aria-hidden="true">{mark}</span>
+    {name}
+  </a>
+) : (
+  <span class="integ">
+    <span class="integ-mark" aria-hidden="true">{mark}</span>
+    {name}
+  </span>
+)}

@@ -1,0 +1,43 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label = '复制提示词' } = Astro.props;
+---
+
+<button class="btn btn-cinnabar" type="button" data-copy-prompt>{label}</button>
+
+<script>
+  function bindCopy() {
+    document.querySelectorAll<HTMLButtonElement>('[data-copy-prompt]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      const original = btn.textContent ?? '复制提示词';
+      btn.addEventListener('click', async () => {
+        const pre = document.getElementById('prompt-body');
+        const text = pre?.textContent ?? '';
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        }
+        btn.textContent = '已复制';
+        window.setTimeout(() => {
+          btn.textContent = original;
+        }, 1600);
+      });
+    });
+  }
+
+  bindCopy();
+  document.addEventListener('astro:page-load', bindCopy);
+</script>
