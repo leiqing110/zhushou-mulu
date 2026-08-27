@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="添加助手 · 助手目录"
+  description="用 bots/ 目录下一则 Markdown 和 YAML 头信息，即可收录新的 Grok Bot 提示词。"
+  current="add"
+>
+  <div class="wrap">
+    <p class="crumbs"><a href="/">全部助手</a> / 添加助手</p>
+    <section class="page-hero">
+      <p class="kicker">投稿</p>
+      <h1>如何添加一则助手</h1>
+      <p class="lede">
+        不需要账号。在仓库的 <code>bots/</code> 目录新增一则 Markdown，写好头信息和提示词正文，重新构建即可出现在目录里。
+      </p>
+    </section>
+
+    <article class="prose">
+      <h2>1. 新建文件</h2>
+      <p>
+        文件名即网址短名，建议用拼音或英文短横线，例如
+        <code>bots/zhoubao-zidong-guidang.md</code>，对应页面
+        <code>/bots/zhoubao-zidong-guidang</code>。
+      </p>
+
+      <h2>2. 写 YAML 头信息</h2>
+      <p>下面五个字段都是必填：</p>
+<pre>{`---
+name: 周报自动归档
+category: 效率
+integrations:
+  - 飞书
+  - Notion
+contributor: 林知秋
+added_at: 2026-08-12
+---`}</pre>
+      <ul>
+        <li><code>name</code>：目录里显示的中文名。</li>
+        <li><code>category</code>：只能是 效率 / 销售 / 营销 / 运营 / 客成 / 生活 之一。</li>
+        <li><code>integrations</code>：字符串列表。已有集成包括 飞书、企微、钉钉、Gmail、Slack、GitHub、Notion、YouTube、AITuber、TikTok、微信公众号。新名字也可以，记得同时在 <code>src/lib/catalog.ts</code> 登记，分类页和集成页才能列出来。</li>
+        <li><code>contributor</code>：贡献者署名。</li>
+        <li><code>added_at</code>：ISO 日期，如 <code>2026-08-21</code>，用于「最新」排序。</li>
+      </ul>
+
+      <h2>3. 正文就是提示词</h2>
+      <p>
+        头信息下面的 Markdown 正文会原样作为可复制的提示词。请按这个口吻写，让 Grok Bot 逐步带用户完成设置：
+      </p>
+<pre>{`帮我新建一个机器人，名叫「……」。
+先带我连接……
+然后配置……
+先问我……
+先给我看……
+我确认后发出并保存。发送、发布或付款前必须先让我确认。`}</pre>
+
+      <h2>4. 本地预览</h2>
+      <pre>{`pnpm install   # 或 npm install
+pnpm dev       # 或 npm run dev`}</pre>
+      <p>打开本地地址，确认搜索、分类、集成和「复制提示词」都正常，再提交变更。</p>
+    </article>
+  </div>
+</Layout>
