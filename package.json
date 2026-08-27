@@ -1,0 +1,16 @@
+{
+  "name": "zhushou-mulu",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "助手目录 — Grok Bot 现成提示词",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.13.2"
+  }
+}
