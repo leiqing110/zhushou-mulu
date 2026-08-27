@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BotDirectory from '../../components/BotDirectory.astro';
+import { CATEGORIES, categoryBySlug } from '../../lib/catalog';
+import { loadBots } from '../../lib/load';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const meta = categoryBySlug(slug ?? '');
+if (!meta) {
+  return Astro.redirect('/categories');
+}
+
+const bots = (await loadBots()).filter((b) => b.category === meta.name);
+---
+
+<Layout
+  title={`${meta.name} · 助手目录`}
+  description={meta.blurb}
+  current="categories"
+>
+  <div class="wrap">
+    <p class="crumbs">
+      <a href="/">全部助手</a> / <a href="/categories">分类</a> / {meta.name}
+    </p>
+    <section class="page-hero">
+      <p class="kicker">{meta.kicker}</p>
+      <h1>{meta.name}</h1>
+      <p class="lede">{meta.blurb}</p>
+    </section>
+    <BotDirectory bots={bots} heading={`${meta.name}助手`} lockCategory={meta.name} />
+  </div>
+</Layout>

@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BotDirectory from '../../components/BotDirectory.astro';
+import { INTEGRATIONS, integrationBySlug } from '../../lib/catalog';
+import { loadBots } from '../../lib/load';
+
+export function getStaticPaths() {
+  return INTEGRATIONS.map((i) => ({ params: { slug: i.slug } }));
+}
+
+const { slug } = Astro.params;
+const meta = integrationBySlug(slug ?? '');
+if (!meta) {
+  return Astro.redirect('/integrations');
+}
+
+const bots = (await loadBots()).filter((b) => b.integrations.includes(meta.name));
+---
+
+<Layout
+  title={`${meta.name} · 助手目录`}
+  description={`使用 ${meta.name} 的 Grok Bot 现成提示词。${meta.blurb}`}
+  current="integrations"
+>
+  <div class="wrap">
+    <p class="crumbs">
+      <a href="/">全部助手</a> / <a href="/integrations">集成</a> / {meta.name}
+    </p>
+    <section class="page-hero">
+      <p class="kicker">集成</p>
+      <h1>{meta.name}</h1>
+      <p class="lede">{meta.blurb}下列助手会在设置流程里带你连接{meta.name}。</p>
+    </section>
+    <BotDirectory bots={bots} heading={`用到${meta.name}的助手`} lockIntegration={meta.name} />
+  </div>
+</Layout>

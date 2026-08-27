@@ -1,0 +1,42 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { INTEGRATIONS } from '../../lib/catalog';
+import { loadBots } from '../../lib/load';
+
+const bots = await loadBots();
+const counts = Object.fromEntries(
+  INTEGRATIONS.map((i) => [i.name, bots.filter((b) => b.integrations.includes(i.name)).length]),
+);
+---
+
+<Layout
+  title="集成 · 助手目录"
+  description="飞书、企微、钉钉、Gmail、Slack、GitHub、Notion、YouTube、AITuber、TikTok、微信公众号。"
+  current="integrations"
+>
+  <div class="wrap">
+    <p class="crumbs"><a href="/">全部助手</a> / 集成</p>
+    <section class="page-hero">
+      <p class="kicker">按工具浏览</p>
+      <h1>先连接，再配置</h1>
+      <p class="lede">
+        每则提示词都会带你接好要用的工具。连接完成后才开始问你要什么，草稿确认后才发出。
+      </p>
+    </section>
+    <div class="grid-3">
+      {
+        INTEGRATIONS.map((i) => (
+          <a class="card" href={`/integrations/${i.slug}`}>
+            <span class="integ">
+              <span class="integ-mark" aria-hidden="true">{i.mark}</span>
+              {i.name}
+            </span>
+            <h2>{i.name}</h2>
+            <p>{i.blurb}</p>
+            <span class="more">{counts[i.name] ?? 0} 则提示词 →</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: string;
+}
+
+const {
+  title,
+  description = '助手目录：把现成的 Grok Bot 提示词贴进去，连接工具，确认后再发出。',
+  current = '',
+} = Astro.props;
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.href;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到正文</a>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark" aria-hidden="true">助</span>
+          助手目录
+        </a>
+        <nav class="nav" aria-label="主导航">
+          <a href="/" aria-current={current === 'home' ? 'page' : undefined}>全部</a>
+          <a href="/categories" aria-current={current === 'categories' ? 'page' : undefined}>分类</a>
+          <a href="/integrations" aria-current={current === 'integrations' ? 'page' : undefined}>集成</a>
+          <a href="/about" aria-current={current === 'about' ? 'page' : undefined}>关于</a>
+          <a class="btn btn-ghost" href="/add" aria-current={current === 'add' ? 'page' : undefined}>添加助手</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div>
+            <a class="brand" href="/" style="margin-bottom: 10px;">
+              <span class="brand-mark" aria-hidden="true">助</span>
+              助手目录
+            </a>
+            <p class="lede" style="font-size: 14px; margin-top: 10px;">
+              Grok Bot 现成提示词。先问、先看、确认后再发出。
+            </p>
+          </div>
+          <div>
+            <h2>浏览</h2>
+            <ul>
+              <li><a href="/">全部助手</a></li>
+              <li><a href="/categories">分类</a></li>
+              <li><a href="/integrations">集成</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>分类</h2>
+            <ul>
+              <li><a href="/categories/xiaolv">效率</a></li>
+              <li><a href="/categories/xiaoshou">销售</a></li>
+              <li><a href="/categories/yingxiao">营销</a></li>
+              <li><a href="/categories/yunying">运营</a></li>
+              <li><a href="/categories/kecheng">客成</a></li>
+              <li><a href="/categories/shenghuo">生活</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>项目</h2>
+            <ul>
+              <li><a href="/add">如何添加</a></li>
+              <li><a href="/about">关于</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="foot-note">
+          <span>助手目录 · 现成提示词，贴进 Grok Bot 即可用</span>
+          <span>发送 / 付款前请先确认</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
