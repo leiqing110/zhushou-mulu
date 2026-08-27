@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BotDirectory from '../components/BotDirectory.astro';
+import { loadBots } from '../lib/load';
+
+const bots = await loadBots();
+---
+
+<Layout title="助手目录 · Grok Bot 现成提示词" current="home">
+  <div class="wrap">
+    <section class="hero">
+      <p class="kicker">GROK BOT · 现成提示词</p>
+      <h1>助手目录</h1>
+      <p class="lede">
+        把现成工作流贴进 Grok Bot。带你连接工具，先问清楚，先给你看草稿，确认后再发出并保存。
+      </p>
+    </section>
+    <BotDirectory bots={bots} />
+  </div>
+</Layout>

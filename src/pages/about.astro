@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="关于 · 助手目录"
+  description="助手目录收录可复制的 Grok Bot 提示词。先问、先看、确认后再发出。"
+  current="about"
+>
+  <div class="wrap">
+    <p class="crumbs"><a href="/">全部助手</a> / 关于</p>
+    <section class="page-hero">
+      <p class="kicker">关于本目录</p>
+      <h1>先预览，再发出</h1>
+      <p class="lede">
+        助手目录收录的不是聊天话术，而是一套可复查的设置流程：贴进 Grok Bot，连接工具，问清需求，把草稿给你看，你点头之后才对外动作。
+      </p>
+    </section>
+    <article class="prose">
+      <h2>这是什么</h2>
+      <p>
+        「助手目录」是一份面向中文工作流的 Grok Bot 提示词名录。每一则对应一个具体场景——周报、跟进、值班、短视频、入职、行程——并写明要用到哪些工具。
+      </p>
+      <h2>为什么要确认</h2>
+      <p>
+        助手一旦连上飞书、邮箱或视频平台，就可能发消息、发邮件、发视频。所以每则提示词都把「先问我、先给我看、确认后才发出并保存」写进正文。发送、发布或付款前，你必须能拦住它。
+      </p>
+      <h2>如何收录</h2>
+      <p>
+        不设登录。把 Markdown 放到 <code>bots/</code> 即可，详见 <a href="/add">如何添加</a>。
+      </p>
+      <h2>设计</h2>
+      <p>
+        版面按中文刊物来排：宣纸底、墨色字、朱砂印。分类用矿物色签，集成用方印标记。不堆指标，不藏按钮。
+      </p>
+    </article>
+  </div>
+</Layout>
