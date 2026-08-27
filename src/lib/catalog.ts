@@ -36,7 +36,7 @@ export const CATEGORIES: CategoryMeta[] = [
     slug: 'yingxiao',
     name: '营销',
     kicker: '选题、成片、排期一条线',
-    blurb: '公众号选题、无脸短视频、竞品简报。先出草稿，确认后再发布。',
+    blurb: '公众号选题、不露脸短视频、竞品简报。先出草稿，确认后再发布。',
     tone: 'cinnabar',
   },
   {
@@ -92,7 +92,7 @@ export const INTEGRATIONS: IntegrationMeta[] = [
   { slug: 'github', name: 'GitHub', mark: 'GH', blurb: 'Pull Request、发版与评审。' },
   { slug: 'notion', name: 'Notion', mark: 'N', blurb: '知识库、台历与归档。' },
   { slug: 'youtube', name: 'YouTube', mark: 'YT', blurb: 'Shorts 与频道排期发布。' },
-  { slug: 'aituber', name: 'AITuber', mark: 'AI', blurb: '虚拟口播与无脸成片。' },
+  { slug: 'aituber', name: 'AITuber', mark: 'AI', blurb: '虚拟口播与不露脸成片。' },
   { slug: 'tiktok', name: 'TikTok', mark: 'TT', blurb: '短视频发布与封面文案。' },
   { slug: 'wechat-mp', name: '微信公众号', mark: '公', blurb: '公众号选题、草稿与排期。' },
 ];
