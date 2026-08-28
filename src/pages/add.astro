@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/paths';
 ---
 
 <Layout
@@ -8,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
   current="add"
 >
   <div class="wrap">
-    <p class="crumbs"><a href="/">全部助手</a> / 添加助手</p>
+    <p class="crumbs"><a href={withBase("/")}>全部助手</a> / 添加助手</p>
     <section class="page-hero">
       <p class="kicker">投稿</p>
       <h1>如何添加一则助手</h1>

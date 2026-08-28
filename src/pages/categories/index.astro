@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { CATEGORIES } from '../../lib/catalog';
 import { loadBots } from '../../lib/load';
+import { withBase } from '../../lib/paths';
 
 const bots = await loadBots();
 const counts = Object.fromEntries(
@@ -15,7 +16,7 @@ const counts = Object.fromEntries(
   current="categories"
 >
   <div class="wrap">
-    <p class="crumbs"><a href="/">全部助手</a> / 分类</p>
+    <p class="crumbs"><a href={withBase("/")}>全部助手</a> / 分类</p>
     <section class="page-hero">
       <p class="kicker">按分类浏览</p>
       <h1>六类现成提示词</h1>
@@ -26,7 +27,7 @@ const counts = Object.fromEntries(
     <div class="grid-3">
       {
         CATEGORIES.map((c) => (
-          <a class="card" href={`/categories/${c.slug}`}>
+          <a class="card" href={withBase(`/categories/${c.slug}`)}>
             <span class={`badge tone-${c.tone}`}>{c.name}</span>
             <h2>{c.name}</h2>
             <p>{c.blurb}</p>

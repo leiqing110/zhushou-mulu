@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { INTEGRATIONS } from '../../lib/catalog';
 import { loadBots } from '../../lib/load';
+import { withBase } from '../../lib/paths';
 
 const bots = await loadBots();
 const counts = Object.fromEntries(
@@ -15,7 +16,7 @@ const counts = Object.fromEntries(
   current="integrations"
 >
   <div class="wrap">
-    <p class="crumbs"><a href="/">全部助手</a> / 集成</p>
+    <p class="crumbs"><a href={withBase("/")}>全部助手</a> / 集成</p>
     <section class="page-hero">
       <p class="kicker">按工具浏览</p>
       <h1>先连接，再配置</h1>
@@ -26,7 +27,7 @@ const counts = Object.fromEntries(
     <div class="grid-3">
       {
         INTEGRATIONS.map((i) => (
-          <a class="card" href={`/integrations/${i.slug}`}>
+          <a class="card" href={withBase(`/integrations/${i.slug}`)}>
             <span class="integ">
               <span class="integ-mark" aria-hidden="true">{i.mark}</span>
               {i.name}

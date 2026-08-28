@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/paths';
 ---
 
 <Layout
@@ -8,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
   current="about"
 >
   <div class="wrap">
-    <p class="crumbs"><a href="/">全部助手</a> / 关于</p>
+    <p class="crumbs"><a href={withBase("/")}>全部助手</a> / 关于</p>
     <section class="page-hero">
       <p class="kicker">关于本目录</p>
       <h1>先预览，再发出</h1>
@@ -27,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
       </p>
       <h2>如何收录</h2>
       <p>
-        不设登录。把 Markdown 放到 <code>bots/</code> 即可，详见 <a href="/add">如何添加</a>。
+        不设登录。把 Markdown 放到 <code>bots/</code> 即可，详见 <a href={withBase("/add")}>如何添加</a>。
       </p>
       <h2>设计</h2>
       <p>
