@@ -1,6 +1,7 @@
 ---
 import type { BotCard } from '../lib/catalog';
 import { CATEGORIES, INTEGRATIONS } from '../lib/catalog';
+import { withBase } from '../lib/paths';
 import CategoryBadge from './CategoryBadge.astro';
 import IntegrationBadge from './IntegrationBadge.astro';
 
@@ -31,7 +32,7 @@ const usedIntegrations = INTEGRATIONS.filter((i) =>
 );
 ---
 
-<section class="directory" data-directory>
+<section class="directory" data-directory data-base={import.meta.env.BASE_URL}>
   <script type="application/json" data-bots set:html={JSON.stringify(payload)} />
 
   <div class="toolbar">
@@ -96,7 +97,7 @@ const usedIntegrations = INTEGRATIONS.filter((i) =>
             data-added={bot.added_at}
           >
             <td data-label="名称">
-              <a class="bot-name" href={`/bots/${bot.slug}`}>
+              <a class="bot-name" href={withBase(`/bots/${bot.slug}`)}>
                 {bot.name}
               </a>
             </td>
@@ -217,7 +218,10 @@ const usedIntegrations = INTEGRATIONS.filter((i) =>
         const target = event.target as HTMLElement;
         if (target.closest('a')) return;
         const slug = row.dataset.slug;
-        if (slug) window.location.href = `/bots/${slug}`;
+        if (slug) {
+          const base = (root.dataset.base || '/').replace(/\/$/, '');
+          window.location.href = `${base}/bots/${slug}`;
+        }
       });
     });
 

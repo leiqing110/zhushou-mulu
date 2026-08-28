@@ -5,6 +5,7 @@ import IntegrationBadge from '../../components/IntegrationBadge.astro';
 import CopyPrompt from '../../components/CopyPrompt.astro';
 import { formatAddedAt } from '../../lib/catalog';
 import { loadBot, loadBots } from '../../lib/load';
+import { withBase } from '../../lib/paths';
 
 export async function getStaticPaths() {
   const bots = await loadBots();
@@ -13,8 +14,8 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const loaded = await loadBot(slug ?? '');
-if (!loaded) {
-  return Astro.redirect('/');
+If (!loaded) {
+  return Astro.redirect(withBase('/'));
 }
 const { card } = loaded;
 ---
@@ -25,8 +26,8 @@ const { card } = loaded;
 >
   <div class="wrap">
     <p class="crumbs">
-      <a href="/">全部助手</a> /
-      <a href={`/categories/${card.categorySlug}`}>{card.category}</a>
+      <a href={withBase("/")}>全部助手</a> /
+      <a href={withBase(`/categories/${card.categorySlug}`)}>{card.category}</a>
     </p>
     <section class="page-hero" style="border-bottom: 0; padding-bottom: 8px;">
       <h1>{card.name}</h1>

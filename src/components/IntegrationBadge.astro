@@ -1,5 +1,6 @@
 ---
 import { integrationByName } from '../lib/catalog';
+import { withBase } from '../lib/paths';
 
 interface Props {
   name: string;
@@ -8,7 +9,7 @@ interface Props {
 
 const { name, href } = Astro.props;
 const meta = integrationByName(name);
-const to = href === false ? undefined : href ?? (meta ? `/integrations/${meta.slug}` : undefined);
+const to = href === false ? undefined : href ?? (meta ? withBase(`/integrations/${meta.slug}`) : undefined);
 const mark = meta?.mark ?? name.slice(0, 1);
 ---
 

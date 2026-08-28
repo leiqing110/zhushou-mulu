@@ -1,5 +1,6 @@
 ---
 import { categoryByName } from '../lib/catalog';
+import { withBase } from '../lib/paths';
 
 interface Props {
   name: string;
@@ -9,7 +10,7 @@ interface Props {
 const { name, href } = Astro.props;
 const meta = categoryByName(name);
 const tone = meta?.tone ?? 'slate';
-const to = href ?? (meta ? `/categories/${meta.slug}` : undefined);
+const to = href ?? (meta ? withBase(`/categories/${meta.slug}`) : undefined);
 ---
 
 {to ? (
